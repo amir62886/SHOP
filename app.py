@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, login_user, login_required, current_user
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///DB.db'
@@ -26,7 +26,7 @@ class User(db.Model):
         user = self.query.filter_by(id = user_id).first()
         return user
     
-    def is_autenticated(self):
+    def is_authenticated(self):
         return True
     
     def is_active(self):
@@ -89,3 +89,23 @@ def registration():
         db.session.commit()
         return "User added"
     return render_template("registration.html")
+
+
+@app.route("/login", methods=['POST','GET'])
+def login():
+    if request.method == 'POST':
+        email = request.form["email"]
+        password = request.form["password"]
+        user = User.query.filter_by(email = email).first()
+        if user and check_password_hash(user.hashedPassword, password):
+            login_user(user)
+            return redirect('/')
+        return render_template('login.html')
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
+        

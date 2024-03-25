@@ -11,15 +11,21 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        {% if current_user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link "  href="/addproduct">Add Product</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link "  href="/logout">Exit</a>
+        </li>
+        {% else %}
         <li class="nav-item">
           <a class="nav-link" href="/login">Log In</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/registration">Sign In</a>
         </li>
+        {% endif %}
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
